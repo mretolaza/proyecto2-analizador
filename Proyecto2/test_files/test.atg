@@ -1,0 +1,71 @@
+COMPILER Ejemplo
+(.
+/*--------------Scanner Specification----------*/
+.)
+CHARACTERS
+letter = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".
+digit = "0123456789".
+hexdigit = digit+"ABCDEF".
+
+KEYWORDS
+if="if".
+while="while".
+
+
+TOKENS
+id = letter{letter} EXCEPT KEYWORDS.
+number = digit{digit}.
+
+hexnumber = hexdigit{hexdigit}"(H)".
+float = digit{digit}.digit{digit}.
+
+
+PRODUCTIONS
+END Ejemplo
+
+cocol = {
+    CHARACTERS: [
+        letter=(a|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|z|A|B|C|D|E|F|G|H|I|J|K|L|M|N|O|P|Q|R|S|T|U|V|W|X|Y|Z)
+        digit="0123456789"
+        hexdigit=digit+"ABCDEF"
+    ],
+    KEYWORDS: [
+        if="if"
+        while="while"
+    ],
+    TOKENS: [
+        id=letter{letter} EXCEPT KEYWORDS
+        number=digit{digit}
+        hexnumber=hexdigit{hexdigit}"(H)"
+        float=digit{digit}.digit{digit}
+    ]
+}
+
+regExpChar = [{
+    name: "hexdigit",
+    value: (0|1|2|3|4|5|6|7|8|9)+(A|B|C|D|E|F)
+}, {
+    name: "letter",
+    value: (a|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|z|A|B|C|D|E|F|G|H|I|J|K|L|M|N|O|P|Q|R|S|T|U|V|W|X|Y|Z)
+}, {
+    name: "digit",
+    value: (0|1|2|3|4|5|6|7|8|9)
+}]
+
+regExpKeyWord = [{
+    name: "if",
+    value: if
+}, {
+    name: "while",
+    value: while
+}]
+
+regExpToken = [{
+    name: "number",
+    value: (0|1|2|3|4|5|6|7|8|9)((0|1|2|3|4|5|6|7|8|9))*
+}, {
+    name: "hexnumber",
+    value: (0|1|2|3|4|5|6|7|8|9)+(A|B|C|D|E|F)((0|1|2|3|4|5|6|7|8|9)+(A|B|C|D|E|F))*(H)
+}]
+
+[CHARACTERS, KEYWORDS, TOKENS]
