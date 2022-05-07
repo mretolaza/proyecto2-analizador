@@ -7,6 +7,7 @@ const {
   isCocolKeyword,
   isSet,
   replaceAll,
+  extractCharCode,
 } = require('./utils');
 
 const filePath = process.argv.slice(2)[0];
@@ -68,6 +69,9 @@ Object.keys(cocol).forEach((key) => {
       const productionName = line.split('=')[0];
       let productionValue = line.split('=')[1];
       if (isSet(productionValue)) {
+        // Open production as set
+        productionValue = `(${productionValue}`;
+
         // Replace existing char on actual char
         regExpChar.forEach(({ name, value }) => {
           productionValue = replaceAll(productionValue, name, value);
@@ -75,12 +79,28 @@ Object.keys(cocol).forEach((key) => {
 
         let flag = true;
 
+        // Extract all double quotes
         while (flag) {
           const extractResult = extractFromDoubleQuote(productionValue);
           flag = extractResult.found;
 
           productionValue = replaceAll(productionValue, `"${extractResult.value}"`, convertStringToOr(extractResult.value));
         }
+
+        // Extract CHR()
+        flag = true;
+        while (flag) {
+          const extractResult = extractCharCode(productionValue);
+          flag = extractResult.found;
+
+          productionValue = replaceAll(productionValue, `CHR(${extractResult.value})`, String.fromCharCode(extractResult.value));
+        }
+
+        // Delete plus
+        productionValue = replaceAll(productionValue, '+', '');
+
+        // Close production as set
+        productionValue = `${productionValue})`;
 
         regExpChar.push({
           name: productionName,
@@ -131,14 +151,6 @@ Object.keys(cocol).forEach((key) => {
         // Add Kleene
         productionValue = replaceAll(productionValue, '{', '(');
         productionValue = replaceAll(productionValue, '}', ')*');
-
-        let flag = true;
-        while (flag) {
-          const extractResult = extractFromDoubleQuote(productionValue);
-          flag = extractResult.found;
-
-          productionValue = replaceAll(productionValue, `"${extractResult.value}"`, extractResult.value);
-        }
 
         regExpToken.push({
           name: productionName,

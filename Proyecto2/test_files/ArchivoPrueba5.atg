@@ -1,0 +1,46 @@
+COMPILER ArchivoPrueba4
+
+CHARACTERS
+
+letra = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".
+digito = "0123456789".
+tab = CHR(9).
+eol = CHR(10).
+
+TOKENS
+
+id = letra{letra|digito} EXCEPT KEYWORDS.
+numero = digito{digito}.
+
+PRODUCTIONS
+
+EstadoInicial = {Instruccion ";"}.
+
+Instruccion = 								(.int value;.)
+	Expresion <ref value>			(.System.Console.WriteLn(value.ToString());.)
+	.
+
+Expresion <ref int result> =		(.int result1, result2;.)
+	Expresion <ref result1>
+	{	  "+" Termino < ref result2>	(.result1 += result2;.)
+		| "-" Termino < ref result2>	(.result1 -= result2;.)
+	}								(.result=result1;.)
+	.
+
+
+Termino <ref int result> =				(.int result1,result2;.)
+	Factor <ref result1>
+	{	  "*" Factor <ref result2>	(.result1*=result2;.)
+		| "/" Factor <ref result2>	(.result1/=result2;.)
+	}								(.result=result1;.)
+	.
+
+Factor <ref int result> =			(.int signo=1;.)
+	["-"(.signo = -1;.)]
+	( Number<ref result> | "("Expression< ref result>")") (.result*=signo;.)
+	.
+
+Number <ref int result> =  numero (. result = int.Parse(lastToken.Value).)
+.
+
+END ArchivoPrueba4

@@ -6,9 +6,11 @@ module.exports.TOKEN_TYPE = {
   END: 'EOF',
   EPSILON: 'ε',
   BLANK: ' ',
-  REGCHAR: 'a-z0-9',
-  INCREASED: '#',
-  UNKNOWN: 'UNKNOWN',
+  DOUBLE_QUOTE: '"',
+  ESCAPE: '\\',
+  EXTEND: '\d\w',
+  UNKNOWN: 'unknown',
+  REGCHAR: 'a-z0-9_ \n\t\r',
 };
 
 module.exports.REG_TREE_TYPE = {

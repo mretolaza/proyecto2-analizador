@@ -16,8 +16,44 @@ const getWords = (filePath) => {
     let wordPosition = 0;
     let word = '';
     for (let i = 0; i < line.length; i++) {
-      const char = line[i];
-      if (char.charCodeAt() !== ASCII.space && char.charCodeAt() !== ASCII.tab) {
+      let char = line[i];
+
+      if (char === '"') {
+        // Read string
+        if (word.length === 0) {
+          wordPosition = i + 1;
+        }
+        word += char;
+
+        i++;
+        char = line[i];
+
+        // Flag validate if double quote found or end of line
+        let flag = true;
+        while (flag) {
+          if (i < line.length) {
+            if (char === '"') {
+              word += char;
+              flag = false;
+            } else {
+              word += char;
+              i++;
+              char = line[i];
+            }
+          } else {
+            flag = false;
+          }
+        }
+
+        words.push({
+          line: index,
+          position: wordPosition,
+          word,
+        });
+
+        wordPosition = 0;
+        word = '';
+      } else if (char.charCodeAt() !== ASCII.space && char.charCodeAt() !== ASCII.tab) {
         if (word.length === 0) {
           wordPosition = i + 1;
         }
@@ -42,12 +78,11 @@ const getWords = (filePath) => {
         wordPosition = 0;
         word = '';
       } else if (char.charCodeAt() === ASCII.tab) {
-        const charCodeWord = `CHR(${char.charCodeAt(0)})`;
         wordPosition = i + 1;
         words.push({
           line: index,
           position: wordPosition,
-          word: charCodeWord,
+          word: char,
         });
         wordPosition = 0;
         word = '';

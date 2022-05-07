@@ -44,6 +44,13 @@ module.exports.extractFromDoubleQuote = (str) => {
     : { found: false, value: str };
 };
 
+module.exports.extractCharCode = (str) => {
+  const matches = str.match(/CHR\((.*?)\)/);
+  return matches
+    ? { found: true, value: matches[1] }
+    : { found: false, value: str };
+};
+
 module.exports.replaceAll = (str, find, replace) => {
   const escapeRegExp = (string) => string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   return str.replace(new RegExp(escapeRegExp(find), 'g'), replace);
